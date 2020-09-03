@@ -1,6 +1,6 @@
 import os, argparse
 
-from .conceal import *
+from .functions import *
 
 class bcolors:
     HEADER = '\033[95m'
