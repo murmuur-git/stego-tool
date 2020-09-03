@@ -1,23 +1,29 @@
-import os
-import argparse
+from libs import *
 
-def conceal(blanket, message):
+def conceal(blanket, message, mode):
+    """
+    Conceals a message inside a blanket message. Concealing is done by finding a
+    key string that when combined with blanket message converts the charachters
+    into the message starting with the first one. No actual work is done to the
+    blanket message, so finding the hidden message or key is impossible without
+    one or the other.
+    """
     pass
 
 def reveal(blanket, key):
     pass
 
-def main():
+def init():
     description = 'Hide a message inside another'
     parser = argparse.ArgumentParser(description=description,
                                      epilog='arguments --conceal and --reveal are mutually exclusive')
 
     # Arguments for which task to perform
-    task_group = parser.add_mutually_exclusive_group(required=True)
-    task_group.add_argument('-c','--conceal', action='store', nargs=2, type=str,
+    mode_group = parser.add_mutually_exclusive_group(required=True)
+    mode_group.add_argument('-c','--conceal', action='store', nargs=2, type=str,
                        help='Conceal message inside blanket message',
                        metavar=('Blanket', 'Text'))
-    task_group.add_argument('-r','--reveal', action='store', nargs=2, type=str,
+    mode_group.add_argument('-r','--reveal', action='store', nargs=2, type=str,
                        help='Reveal message hidden in blanket message',
                        metavar=('Blanket', 'Key'))
 
@@ -29,9 +35,18 @@ def main():
                        help='Output saves result into file in same location as blanket',)
     parser.set_defaults(type='s')
 
-    args = parser.parse_args()
+    global ARGS
+    ARGS = parser.parse_args()
 
-    print(args)
+def main():
+    init()
+
+    blanket = 'Hello, World! How have you been?'
+    message = 'Goodbye, World! D:'
+
+    conceal(blanket, message, ARGS.type)
+
+    print(ARGS)
 
 if __name__ == '__main__':
     main()
