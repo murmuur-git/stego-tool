@@ -8,7 +8,8 @@ def conceal(blanket, message, mode):
     blanket message, so finding the hidden message or key is impossible without
     one or the other.
     """
-    pass
+    xor_loop(blanket, message)
+    
 
 def reveal(blanket, key):
     pass
