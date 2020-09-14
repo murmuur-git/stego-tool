@@ -53,14 +53,32 @@ def conceal(blanket_path, message_path, mode='s'):
 
     # Returns key
     if mode == 's': # Print to console
-        print(xor_loop(blanket, message))
+        print(xor_loop(blanket, message, hex_mode='o'))
     elif mode == 't': # Save as txt file
         outfile_path = os.getcwd()+'/output.txt'
         with open(outfile_path, 'w') as file:
             file.write(xor_loop(blanket, message))
 
-def reveal(blanket, key):
-    pass
+def reveal(blanket_path, key_path, mode='s'):
+    """
+    Reveals a message concealed using conceal()
+    """
+    # Open files
+    blanket = get_contents(blanket_path)
+    key = ast.literal_eval(get_contents(key_path))
+
+    if blanket == None: # Checks if blanket_path exists:
+        print(f'[{bcolor.WARNING}!{bcolor.WARNING}] Error 101: {blanket_path} does not exist')
+    elif key == None: # Checks if key_path exists
+        print(f'[{bcolor.WARNING}!{bcolor.WARNING}] Error 101: {key_path} does not exist')
+
+    # Returns key
+    if mode == 's': # Print to console
+        print(xor_loop(blanket, key, hex_mode='i'))
+    elif mode == 't': # Save as txt file
+        outfile_path = os.getcwd()+'/output.txt'
+        with open(outfile_path, 'w') as file:
+            file.write(xor_loop(blanket, key))
 
 def main():
     init()
