@@ -1,20 +1,14 @@
+"""
+CLI tool to hide one message in another message
+
+author: murmuur
+"""
 from libs import *
 
-def conceal(blanket, message, mode):
-    """
-    Conceals a message inside a blanket message. Concealing is done by finding a
-    key string that when combined with blanket message converts the charachters
-    into the message starting with the first one. No actual work is done to the
-    blanket message, so finding the hidden message or key is impossible without
-    one or the other.
-    """
-    xor_loop(blanket, message)
-    
-
-def reveal(blanket, key):
-    pass
-
 def init():
+    """
+    Sets up the CLI
+    """
     description = 'Hide a message inside another'
     parser = argparse.ArgumentParser(description=description,
                                      epilog='arguments --conceal and --reveal are mutually exclusive')
@@ -33,21 +27,50 @@ def init():
     output_group.add_argument('-s','--stdout', action='store_const', dest='type', const='s',
                        help='Output prints to stdout',)
     output_group.add_argument('-t','--txt', action='store_const', dest='type', const='t',
-                       help='Output saves result into file in same location as blanket',)
+                       help='Output saves result into file',)
     parser.set_defaults(type='s')
 
     global ARGS
     ARGS = parser.parse_args()
 
+def conceal(blanket_path, message_path, mode='s'):
+    """
+    Conceals a message inside a blanket message. Concealing is done by finding a
+    key string that when combined with blanket message converts the charachters
+    into the message starting with the first one. No actual work is done to the
+    blanket message, so finding the hidden message or key is impossible without
+    one or the other.
+    """
+
+    # Open files
+    blanket = get_contents(blanket_path)
+    message = get_contents(message_path)
+
+    if blanket == None: # Checks if blanket_path exists:
+        print(f'[{bcolor.WARNING}!{bcolor.WARNING}] Error 101: {blanket_path} does not exist')
+    elif message == None: # Checks if message_path exists
+        print(f'[{bcolor.WARNING}!{bcolor.WARNING}] Error 101: {message_path} does not exist')
+
+    # Returns key
+    if mode == 's': # Print to console
+        print(xor_loop(blanket, message))
+    elif mode == 't': # Save as txt file
+        outfile_path = os.getcwd()+'/output.txt'
+        with open(outfile_path, 'w') as file:
+            file.write(xor_loop(blanket, message))
+
+def reveal(blanket, key):
+    pass
+
 def main():
     init()
 
-    blanket = 'Hello, World! How have you been?'
-    message = 'Goodbye, World! D:'
+    if ARGS.conceal != None:
+        conceal(ARGS.conceal[0], ARGS.conceal[1], mode=ARGS.type)
+    elif ARGS.reveal != None:
+        reveal(ARGS.reveal[0], ARGS.reveal[1], mode=ARGS.type)
 
-    conceal(blanket, message, ARGS.type)
-
-    print(ARGS)
+    #print(ARGS)
 
 if __name__ == '__main__':
     main()
