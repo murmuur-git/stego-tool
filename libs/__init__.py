@@ -1,4 +1,4 @@
 import os, argparse
 
 from .functions import *
-from .classes import *
+from .objects import *
